@@ -380,11 +380,122 @@ This library is optimized for performance:
 
 Contributions are welcome! Especially for adding new language localizations.
 
-To add a new locale:
+### How to Contribute
+
+1. **Fork this repository** on GitHub
+2. **Clone your fork** locally:
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/discordian-date-converter.git
+   cd discordian-date-converter
+   ```
+3. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+4. **View available development commands**:
+   ```bash
+   make help
+   ```
+   Output:
+   ```
+   Discordian Date Converter - Makefile
+
+   Available targets:
+     make new-locale    Bootstrap a new locale file for translations
+     make help          Show this help message
+   ```
+5. **Create a new branch** for your changes:
+   ```bash
+   git checkout -b add-locale-es
+   ```
+6. **Make your changes** (see below for adding locales)
+7. **Test your changes**:
+   ```bash
+   npm test
+   npm run build
+   ```
+8. **Commit and push** your changes:
+   ```bash
+   git add .
+   git commit -m "feat: Add Spanish locale"
+   git push origin add-locale-es
+   ```
+9. **Open a Pull Request** on GitHub from your fork to the main repository
+
+### Adding a New Locale (Easy Way)
+
+We provide a Makefile to bootstrap new locale files automatically. This is the **recommended approach** for adding new languages.
+
+**Prerequisites:** Make sure you have `make` installed on your system (usually pre-installed on Linux/macOS, available via WSL or MinGW on Windows).
+
+**Usage:**
+
+```bash
+make new-locale
+```
+
+This interactive command will:
+1. Ask for the language code (e.g., `es`, `pt-BR`, `fr`, `de`)
+   - Must follow **ISO 639-1** format (2-letter codes) or **BCP 47** (e.g., `pt-BR`)
+   - See [ISO 639-1 codes reference](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
+2. Ask for the language name (e.g., "Spanish", "French")
+3. Validate the language code format
+4. Create a new locale file with empty strings ready for translation
+5. Automatically update all necessary index files (`src/locales/index.ts` and `src/index.ts`)
+
+**Example session:**
+
+```bash
+$ make new-locale
+🌍 Creating a new locale for Discordian Date Converter
+
+Language codes should follow ISO 639-1 (2-letter codes) or BCP 47 format.
+Examples: en, pt-BR, es, fr, de, ja, zh-CN
+Reference: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+
+Enter language code (e.g., 'es', 'pt-BR'): es
+Enter language name (e.g., 'Spanish', 'French'): Spanish
+📝 Creating locale file: src/locales/es.ts
+✅ Created src/locales/es.ts
+📝 Updating src/locales/index.ts
+✅ Updated src/locales/index.ts
+📝 Updating src/index.ts
+✅ Updated src/index.ts
+
+🎉 Locale 'es' (Spanish) has been bootstrapped!
+
+Next steps:
+  1. Edit src/locales/es.ts and fill in the empty strings with translations
+  2. Run 'npm test' to ensure everything works
+  3. Submit a pull request with your translations
+```
+
+After running this command:
+1. Edit the generated file (e.g., `src/locales/es.ts`) and fill in all the empty strings with your translations
+2. Run `npm test` to ensure everything works correctly
+3. Commit your changes and open a pull request!
+
+### Adding a New Locale (Manual Way)
+
+If you prefer to do it manually:
 1. Create a new file in `src/locales/` (e.g., `es.ts`)
 2. Export a `LocalizedStrings` object with all translations
 3. Add it to `src/locales/index.ts`
-4. Submit a pull request
+4. Add it to `src/index.ts` exports
+5. Submit a pull request
+
+### Translation Guidelines
+
+Your locale file needs to translate:
+- **seasons** (5): Chaos, Discord, Confusion, Bureaucracy, The Aftermath
+- **weekdays** (5): Sweetmorn, Boomtime, Pungenday, Prickle-Prickle, Setting Orange
+- **holydays** (10):
+  - Apostle Holydays: Mungday, Mojoday, Syaday, Zaraday, Maladay
+  - Season Holydays: Chaoflux, Discoflux, Confuflux, Bureflux, Afflux
+- **stTibsDay**: St. Tib's Day (the leap day)
+- **yold**: Year of Our Lady of Discord (abbreviation)
+
+See existing locales ([en.ts](src/locales/en.ts), [pt-BR.ts](src/locales/pt-BR.ts)) for examples.
 
 ## License
 
