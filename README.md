@@ -380,11 +380,68 @@ This library is optimized for performance:
 
 Contributions are welcome! Especially for adding new language localizations.
 
-To add a new locale:
+### Adding a New Locale (Easy Way)
+
+We provide a Makefile to bootstrap new locale files automatically:
+
+```bash
+make new-locale
+```
+
+This interactive command will:
+1. Ask for the language code (e.g., `es`, `pt-BR`, `fr`, `de`)
+   - Must follow **ISO 639-1** format (2-letter codes) or **BCP 47** (e.g., `pt-BR`)
+   - See [ISO 639-1 codes reference](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
+2. Ask for the language name (e.g., "Spanish", "French")
+3. Validate the language code format
+4. Create a new locale file with empty strings ready for translation
+5. Automatically update all necessary index files
+
+**Example:**
+
+```bash
+$ make new-locale
+🌍 Creating a new locale for Discordian Date Converter
+
+Language codes should follow ISO 639-1 (2-letter codes) or BCP 47 format.
+Examples: en, pt-BR, es, fr, de, ja, zh-CN
+Reference: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+
+Enter language code (e.g., 'es', 'pt-BR'): es
+Enter language name (e.g., 'Spanish', 'French'): Spanish
+📝 Creating locale file: src/locales/es.ts
+✅ Created src/locales/es.ts
+📝 Updating src/locales/index.ts
+✅ Updated src/locales/index.ts
+📝 Updating src/index.ts
+✅ Updated src/index.ts
+
+🎉 Locale 'es' (Spanish) has been bootstrapped!
+```
+
+After running this command, simply edit the generated file and fill in the translations!
+
+### Adding a New Locale (Manual Way)
+
+If you prefer to do it manually:
 1. Create a new file in `src/locales/` (e.g., `es.ts`)
 2. Export a `LocalizedStrings` object with all translations
 3. Add it to `src/locales/index.ts`
-4. Submit a pull request
+4. Add it to `src/index.ts` exports
+5. Submit a pull request
+
+### Translation Guidelines
+
+Your locale file needs to translate:
+- **seasons** (5): Chaos, Discord, Confusion, Bureaucracy, The Aftermath
+- **weekdays** (5): Sweetmorn, Boomtime, Pungenday, Prickle-Prickle, Setting Orange
+- **holydays** (10):
+  - Apostle Holydays: Mungday, Mojoday, Syaday, Zaraday, Maladay
+  - Season Holydays: Chaoflux, Discoflux, Confuflux, Bureflux, Afflux
+- **stTibsDay**: St. Tib's Day (the leap day)
+- **yold**: Year of Our Lady of Discord (abbreviation)
+
+See existing locales ([en.ts](src/locales/en.ts), [pt-BR.ts](src/locales/pt-BR.ts)) for examples.
 
 ## License
 
