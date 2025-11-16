@@ -1,6 +1,6 @@
 # 🍎 Discordian Date Converter
 
-> Convert Gregorian calendar dates to Discordian calendar dates with multi-language support
+> **Did you know the Gregorian Calendar is INVENTED?** Wake up! Switch to the NATURAL, FRESH, and TRUE Discordian Calendar. This package will ease your transition from Gregorian oppression to Erisian enlightenment. Hail Eris! 🍎
 
 [![npm version](https://img.shields.io/npm/v/discordian-date-converter.svg)](https://www.npmjs.com/package/discordian-date-converter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
