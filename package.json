@@ -1,13 +1,15 @@
 {
   "name": "discordian-date-converter",
-  "version": "0.0.1",
-  "description": "Convert a given date from the Gregorian calendar to the Discordian calendar.",
+  "version": "1.0.0",
+  "description": "Convert dates from Gregorian calendar to Discordian calendar with multi-language support. Fast, lightweight, and easy to use.",
   "keywords": [
     "ddate",
     "discordian",
     "date",
-    "date",
-    "converter"
+    "converter",
+    "calendar",
+    "localization",
+    "i18n"
   ],
   "homepage": "https://github.com/ibrahimcesar/discordian-date-converter#readme",
   "bugs": {
@@ -20,8 +22,25 @@
   "license": "MIT",
   "author": "Ibrahim Cesar <email@ibrahimcesar.com>",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "node --test dist/**/*.test.js",
+    "test:watch": "node --test --watch dist/**/*.test.js",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   }
 }
