@@ -7,7 +7,7 @@
  * @packageDocumentation
  */
 
-export { toDiscordian, fromString, fromYMD } from './converter';
+export { toDiscordian, fromString, fromISO, fromYMD, toGregorian, toISO } from './converter';
 export { format, shortFormat } from './formatter';
 export { getLocale, locales, en, ptBR } from './locales';
 export type {

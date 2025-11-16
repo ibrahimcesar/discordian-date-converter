@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { toDiscordian, fromString, fromYMD } from './converter';
+import { toDiscordian, fromString, fromISO, fromYMD, toGregorian, toISO } from './converter';
 
 describe('Discordian Date Converter', () => {
   describe('toDiscordian', () => {
@@ -125,6 +125,29 @@ describe('Discordian Date Converter', () => {
     });
   });
 
+  describe('fromISO', () => {
+    it('should convert from ISO 8601 date string', () => {
+      const result = fromISO('2024-01-05');
+
+      assert.strictEqual(result.season, 'Chaos');
+      assert.strictEqual(result.dayOfSeason, 5);
+      assert.strictEqual(result.holyday, 'Mungday');
+    });
+
+    it('should handle ISO date with time', () => {
+      const result = fromISO('2024-01-05T12:00:00.000Z');
+
+      assert.strictEqual(result.season, 'Chaos');
+      assert.strictEqual(result.dayOfSeason, 5);
+    });
+
+    it('should handle leap year Feb 29', () => {
+      const result = fromISO('2024-02-29');
+
+      assert.strictEqual(result.isStTibsDay, true);
+    });
+  });
+
   describe('fromYMD', () => {
     it('should convert from year, month, day', () => {
       const result = fromYMD(2024, 1, 5);
@@ -138,6 +161,88 @@ describe('Discordian Date Converter', () => {
       const result = fromYMD(2024, 2, 29);
 
       assert.strictEqual(result.isStTibsDay, true);
+    });
+  });
+
+  describe('toGregorian', () => {
+    it('should convert Discordian date back to Gregorian', () => {
+      const original = new Date('2024-01-05');
+      const discDate = toDiscordian(original);
+      const gregorian = toGregorian(discDate);
+
+      assert.strictEqual(gregorian.getFullYear(), 2024);
+      assert.strictEqual(gregorian.getMonth(), 0); // January
+      assert.strictEqual(gregorian.getDate(), 5);
+    });
+
+    it('should handle St. Tibs Day conversion', () => {
+      const discDate = toDiscordian(new Date('2024-02-29'));
+      const gregorian = toGregorian(discDate);
+
+      assert.strictEqual(gregorian.getFullYear(), 2024);
+      assert.strictEqual(gregorian.getMonth(), 1); // February
+      assert.strictEqual(gregorian.getDate(), 29);
+    });
+
+    it('should handle end of year', () => {
+      const original = new Date('2024-12-31');
+      const discDate = toDiscordian(original);
+      const gregorian = toGregorian(discDate);
+
+      assert.strictEqual(gregorian.getFullYear(), 2024);
+      assert.strictEqual(gregorian.getMonth(), 11); // December
+      assert.strictEqual(gregorian.getDate(), 31);
+    });
+
+    it('should handle all seasons correctly', () => {
+      const testDates = [
+        '2024-01-01', // Chaos
+        '2024-03-15', // Discord
+        '2024-05-27', // Confusion
+        '2024-08-08', // Bureaucracy
+        '2024-10-20'  // The Aftermath
+      ];
+
+      testDates.forEach(dateStr => {
+        const original = new Date(dateStr);
+        const discDate = toDiscordian(original);
+        const gregorian = toGregorian(discDate);
+
+        assert.strictEqual(gregorian.getFullYear(), original.getFullYear());
+        assert.strictEqual(gregorian.getMonth(), original.getMonth());
+        assert.strictEqual(gregorian.getDate(), original.getDate());
+      });
+    });
+  });
+
+  describe('toISO', () => {
+    it('should convert Discordian date to ISO string', () => {
+      const discDate = toDiscordian(new Date('2024-01-05'));
+      const iso = toISO(discDate);
+
+      assert.strictEqual(iso, '2024-01-05');
+    });
+
+    it('should handle St. Tibs Day', () => {
+      const discDate = toDiscordian(new Date('2024-02-29'));
+      const iso = toISO(discDate);
+
+      assert.strictEqual(iso, '2024-02-29');
+    });
+
+    it('should handle end of year', () => {
+      const discDate = toDiscordian(new Date('2024-12-31'));
+      const iso = toISO(discDate);
+
+      assert.strictEqual(iso, '2024-12-31');
+    });
+
+    it('should round-trip with fromISO', () => {
+      const original = '2024-01-05';
+      const discDate = fromISO(original);
+      const iso = toISO(discDate);
+
+      assert.strictEqual(iso, original);
     });
   });
 

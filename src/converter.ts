@@ -99,6 +99,20 @@ export function fromString(dateString: string): DiscordianDate {
 }
 
 /**
+ * Convert an ISO 8601 date string to a Discordian date
+ *
+ * @param isoString - ISO 8601 date string (e.g., "2024-01-05" or "2024-01-05T12:00:00Z")
+ * @returns The Discordian date representation
+ *
+ * @example
+ * fromISO('2024-01-05')
+ * fromISO('2024-01-05T12:00:00.000Z')
+ */
+export function fromISO(isoString: string): DiscordianDate {
+  return toDiscordian(new Date(isoString));
+}
+
+/**
  * Convert year, month, day to Discordian date
  *
  * @param year - Gregorian year
@@ -108,4 +122,54 @@ export function fromString(dateString: string): DiscordianDate {
  */
 export function fromYMD(year: number, month: number, day: number): DiscordianDate {
   return toDiscordian(new Date(year, month - 1, day));
+}
+
+/**
+ * Convert a Discordian date back to a Gregorian Date object
+ *
+ * @param discordianDate - The Discordian date to convert
+ * @returns The Gregorian Date object
+ *
+ * @example
+ * const discDate = toDiscordian(new Date('2024-01-05'));
+ * const gregDate = toGregorian(discDate);
+ */
+export function toGregorian(discordianDate: DiscordianDate): Date {
+  const gregorianYear = discordianDate.year - YOLD_OFFSET;
+  const isLeap = isLeapYear(gregorianYear);
+
+  // Handle St. Tib's Day (February 29)
+  if (discordianDate.isStTibsDay) {
+    return new Date(gregorianYear, 1, 29); // Month is 0-indexed, so 1 = February
+  }
+
+  // Calculate day of year
+  const seasonIndex = SEASONS.indexOf(discordianDate.season);
+  let dayOfYear = seasonIndex * DAYS_PER_SEASON + discordianDate.dayOfSeason;
+
+  // Adjust for leap year if after St. Tib's Day (day 60)
+  if (isLeap && dayOfYear >= 60) {
+    dayOfYear += 1;
+  }
+
+  // Convert day of year to Date
+  const date = new Date(gregorianYear, 0, 1); // Start at January 1
+  date.setDate(dayOfYear);
+
+  return date;
+}
+
+/**
+ * Convert a Discordian date to an ISO 8601 date string
+ *
+ * @param discordianDate - The Discordian date to convert
+ * @returns ISO 8601 date string (YYYY-MM-DD format)
+ *
+ * @example
+ * const discDate = toDiscordian(new Date('2024-01-05'));
+ * const iso = toISO(discDate); // "2024-01-05"
+ */
+export function toISO(discordianDate: DiscordianDate): string {
+  const date = toGregorian(discordianDate);
+  return date.toISOString().split('T')[0];
 }

@@ -97,12 +97,41 @@ const discDate = fromString('2024-01-05');
 const discDate2 = fromString('January 5, 2024');
 ```
 
+#### `fromISO(isoString: string): DiscordianDate`
+
+Convert an ISO 8601 date string to a Discordian date.
+
+```javascript
+const discDate = fromISO('2024-01-05');
+const discDate2 = fromISO('2024-01-05T12:00:00.000Z');
+```
+
 #### `fromYMD(year: number, month: number, day: number): DiscordianDate`
 
 Convert year, month, and day to a Discordian date.
 
 ```javascript
 const discDate = fromYMD(2024, 1, 5);
+```
+
+#### `toGregorian(discordianDate: DiscordianDate): Date`
+
+Convert a Discordian date back to a Gregorian Date object.
+
+```javascript
+const discDate = toDiscordian(new Date('2024-01-05'));
+const gregDate = toGregorian(discDate);
+console.log(gregDate); // 2024-01-05T00:00:00.000Z
+```
+
+#### `toISO(discordianDate: DiscordianDate): string`
+
+Convert a Discordian date to an ISO 8601 date string (YYYY-MM-DD format).
+
+```javascript
+const discDate = toDiscordian(new Date('2024-01-05'));
+const iso = toISO(discDate);
+console.log(iso); // "2024-01-05"
 ```
 
 ### Formatting Functions
@@ -220,6 +249,37 @@ format(fromString('2024-05-03')); // Discoflux
 format(fromString('2024-07-15')); // Confuflux
 format(fromString('2024-09-26')); // Bureflux
 format(fromString('2024-12-08')); // Afflux
+```
+
+### Working with ISO 8601 Strings
+
+```javascript
+const { fromISO, toISO, toGregorian } = require('discordian-date-converter');
+
+// Parse ISO string
+const discDate = fromISO('2024-01-05');
+console.log(format(discDate));
+// "Setting Orange, Chaos 5, 3190 YOLD - Mungday"
+
+// Convert back to ISO
+const iso = toISO(discDate);
+console.log(iso); // "2024-01-05"
+
+// Round-trip conversion
+const original = '2024-02-29';
+const roundTrip = toISO(fromISO(original));
+console.log(original === roundTrip); // true
+
+// Convert to Gregorian Date object
+const gregDate = toGregorian(discDate);
+console.log(gregDate.toDateString()); // "Fri Jan 05 2024"
+
+// Process API dates
+const apiDates = ['2024-01-05', '2024-03-19', '2024-12-31'];
+apiDates.forEach(date => {
+  const disc = fromISO(date);
+  console.log(`${date} → ${format(disc)}`);
+});
 ```
 
 ### Adding Custom Locale
