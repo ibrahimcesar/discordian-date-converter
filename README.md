@@ -1,4 +1,4 @@
-# discordian-date-converter
+# 🍎 Discordian Date Converter
 
 > Convert Gregorian calendar dates to Discordian calendar dates with multi-language support
 
