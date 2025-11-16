@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { toDiscordian, fromString, fromISO, fromYMD, toGregorian, toISO } from './converter';
+import { toDiscordian, fromString, fromISO, fromYMD, toGregorian, toISO, randomFutureDate, dayOfDeath } from './converter';
 
 describe('Discordian Date Converter', () => {
   describe('toDiscordian', () => {
@@ -243,6 +243,89 @@ describe('Discordian Date Converter', () => {
       const iso = toISO(discDate);
 
       assert.strictEqual(iso, original);
+    });
+  });
+
+  describe('randomFutureDate', () => {
+    it('should return a date at least 5 years in the future', () => {
+      const today = new Date();
+      const fiveYearsFromNow = new Date(today.getFullYear() + 5, 0, 1);
+
+      // Test multiple times since it's random
+      for (let i = 0; i < 10; i++) {
+        const futureDiscDate = randomFutureDate();
+        const futureGregorian = toGregorian(futureDiscDate);
+
+        assert.ok(futureGregorian >= fiveYearsFromNow,
+          `Date ${futureGregorian.toISOString()} should be at least 5 years in the future`);
+      }
+    });
+
+    it('should return a date within 55 years from now', () => {
+      const today = new Date();
+      const fiftyFiveYearsFromNow = new Date(today.getFullYear() + 56, 0, 1);
+
+      // Test multiple times since it's random
+      for (let i = 0; i < 10; i++) {
+        const futureDiscDate = randomFutureDate();
+        const futureGregorian = toGregorian(futureDiscDate);
+
+        assert.ok(futureGregorian < fiftyFiveYearsFromNow,
+          `Date ${futureGregorian.toISOString()} should be within 55 years from now`);
+      }
+    });
+
+    it('should return a valid Discordian date', () => {
+      const futureDate = randomFutureDate();
+
+      assert.ok(futureDate.year > 0);
+      assert.ok(['Chaos', 'Discord', 'Confusion', 'Bureaucracy', 'The Aftermath'].includes(futureDate.season));
+      assert.ok(futureDate.dayOfSeason >= 1 && futureDate.dayOfSeason <= 73);
+
+      if (!futureDate.isStTibsDay) {
+        assert.ok(futureDate.weekday !== null);
+      }
+    });
+
+    it('should generate different dates on multiple calls', () => {
+      // Generate 20 random dates and check they're not all the same
+      const dates = Array.from({ length: 20 }, () => randomFutureDate());
+      const uniqueDates = new Set(dates.map(d => toISO(d)));
+
+      // Very unlikely to get only 1 unique date in 20 tries
+      assert.ok(uniqueDates.size > 1, 'Should generate different random dates');
+    });
+  });
+
+  describe('dayOfDeath', () => {
+    it('should be an alias for randomFutureDate', () => {
+      const deathDate = dayOfDeath();
+
+      // Should have all the same properties as randomFutureDate
+      assert.ok(deathDate.year > 0);
+      assert.ok(['Chaos', 'Discord', 'Confusion', 'Bureaucracy', 'The Aftermath'].includes(deathDate.season));
+      assert.ok(deathDate.dayOfSeason >= 1 && deathDate.dayOfSeason <= 73);
+    });
+
+    it('should return a date at least 5 years in the future', () => {
+      const today = new Date();
+      const fiveYearsFromNow = new Date(today.getFullYear() + 5, 0, 1);
+
+      const deathDate = dayOfDeath();
+      const gregorian = toGregorian(deathDate);
+
+      assert.ok(gregorian >= fiveYearsFromNow,
+        'Day of death should be at least 5 years in the future');
+    });
+
+    it('should work with format function', () => {
+      const deathDate = dayOfDeath();
+      const formatted = require('./formatter').format(deathDate);
+
+      // Should produce a valid formatted string
+      assert.ok(typeof formatted === 'string');
+      assert.ok(formatted.length > 0);
+      assert.ok(formatted.includes('YOLD'));
     });
   });
 

@@ -134,6 +134,29 @@ const iso = toISO(discDate);
 console.log(iso); // "2024-01-05"
 ```
 
+#### `randomFutureDate(): DiscordianDate`
+
+Generate a random Discordian date between 5 and 55 years in the future.
+
+```javascript
+const futureDate = randomFutureDate();
+console.log(format(futureDate));
+// "Prickle-Prickle, Bureaucracy 23, 3205 YOLD"
+```
+
+#### `dayOfDeath(): DiscordianDate`
+
+Alias for `randomFutureDate()` - a playful way to generate your random "day of death" in Discordian format.
+
+```javascript
+const doom = dayOfDeath();
+console.log(format(doom));
+// "Sweetmorn, The Aftermath 42, 3198 YOLD"
+
+console.log(format(doom, { locale: 'pt-BR' }));
+// "Docemanhã, As Consequências 42, 3198 ANSD"
+```
+
 ### Formatting Functions
 
 #### `format(date: DiscordianDate, options?: FormatOptions): string`
@@ -280,6 +303,39 @@ apiDates.forEach(date => {
   const disc = fromISO(date);
   console.log(`${date} → ${format(disc)}`);
 });
+```
+
+### Random Future Dates (Day of Death)
+
+For those pondering mortality or just having fun with randomness:
+
+```javascript
+const { dayOfDeath, randomFutureDate, format, toISO } = require('discordian-date-converter');
+
+// Generate a random future date
+const doom = dayOfDeath();
+console.log(format(doom));
+// "Setting Orange, Chaos 50, 3225 YOLD - Chaoflux"
+
+console.log(toISO(doom));
+// "2059-02-19"
+
+// In Brazilian Portuguese
+console.log(format(doom, { locale: 'pt-BR' }));
+// "Laranja Poente, Caos 50, 3225 ANSD - Fluxo do Caos"
+
+// Generate multiple random dates
+for (let i = 0; i < 5; i++) {
+  const future = randomFutureDate();
+  console.log(format(future));
+}
+
+// Maybe you'll get lucky and land on a holyday!
+let date;
+do {
+  date = randomFutureDate();
+} while (!date.holyday);
+console.log(`You might meet your end on ${date.holyday}!`);
 ```
 
 ### Adding Custom Locale

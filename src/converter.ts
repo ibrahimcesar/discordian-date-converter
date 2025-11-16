@@ -173,3 +173,68 @@ export function toISO(discordianDate: DiscordianDate): string {
   const date = toGregorian(discordianDate);
   return date.toISOString().split('T')[0];
 }
+
+/**
+ * Generate a random Discordian date at least 5 years in the future
+ *
+ * Perfect for pondering mortality, planning distant events, or just having fun!
+ * The date will be between 5 and 55 years from now.
+ *
+ * @returns A random Discordian date in the future
+ *
+ * @example
+ * const deathDay = randomFutureDate();
+ * console.log(format(deathDay));
+ * // "Prickle-Prickle, Bureaucracy 23, 3205 YOLD"
+ *
+ * @example
+ * // Alias for the morbidly curious
+ * const doom = randomFutureDate();
+ * console.log(`Your random day of reckoning: ${format(doom)}`);
+ */
+export function randomFutureDate(): DiscordianDate {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  // Random year between 5 and 55 years from now
+  const minYearsInFuture = 5;
+  const maxAdditionalYears = 50;
+  const yearsToAdd = minYearsInFuture + Math.floor(Math.random() * maxAdditionalYears);
+  const futureYear = currentYear + yearsToAdd;
+
+  // Determine if the future year is a leap year
+  const isLeap = isLeapYear(futureYear);
+  const maxDayOfYear = isLeap ? 366 : 365;
+
+  // Random day of year (1-365 or 1-366)
+  const randomDayOfYear = 1 + Math.floor(Math.random() * maxDayOfYear);
+
+  // Create the date
+  const futureDate = new Date(futureYear, 0, 1);
+  futureDate.setDate(randomDayOfYear);
+
+  return toDiscordian(futureDate);
+}
+
+/**
+ * Alias for randomFutureDate() - generate a random "day of death"
+ *
+ * A playful way to get a random Discordian date at least 5 years in the future.
+ * Remember: in Discordianism, chaos and randomness are sacred!
+ *
+ * @returns A random Discordian date representing your theoretical day of doom
+ *
+ * @example
+ * const doom = dayOfDeath();
+ * console.log(format(doom));
+ * // "Sweetmorn, The Aftermath 42, 3198 YOLD"
+ *
+ * @example
+ * // With Brazilian Portuguese
+ * const morte = dayOfDeath();
+ * console.log(format(morte, { locale: 'pt-BR' }));
+ * // "Docemanhã, As Consequências 42, 3198 ANSD"
+ */
+export function dayOfDeath(): DiscordianDate {
+  return randomFutureDate();
+}
